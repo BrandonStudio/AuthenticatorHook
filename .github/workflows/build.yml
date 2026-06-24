@@ -37,13 +37,6 @@ jobs:
         run: ./gradlew assemble${{ matrix.configuration }} --no-daemon
 
       # https://github.com/parallelcc/MixFlipMod/blob/main/.github/workflows/ci_build.yml
-      - name: Get and store apk path
-        id: get-apk-path
-        run: |
-          set -o pipefail
-          apk_path=$(find ./build/outputs/apk -name "*.apk" | head -n 1)
-          echo "APK_PATH=$apk_path" >> $GITHUB_OUTPUT
-
       - name: Set NAME_SUFFIX
         id: set-name-suffix
         run: |
@@ -55,10 +48,17 @@ jobs:
             echo "NAME_SUFFIX=$sha_short" >> $GITHUB_OUTPUT
           fi
 
+      - name: Get and store apk path
+        id: get-apk-path
+        run: |
+          set -o pipefail
+          apk_path=$(find ./build/outputs/apk -name "*.apk" | head -n 1)
+          new_path=$(echo "$apk_path" | sed 's/\.apk/-${{ steps.set-name-suffix.outputs.NAME_SUFFIX }}.unsigned.apk/g')
+          echo "APK_PATH=$apk_path" >> $GITHUB_OUTPUT
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ env.APP_NAME }}-unsigned-${{ steps.set-name-suffix.outputs.NAME_SUFFIX }}-${{ matrix.configuration }}.apk
           path: ${{ steps.get-apk-path.outputs.APK_PATH }}
           archive: false
 
