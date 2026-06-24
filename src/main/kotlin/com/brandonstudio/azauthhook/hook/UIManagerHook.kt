@@ -55,7 +55,8 @@ object UIManagerHook {
                 log("$TAG [WARN] showValidationWarning(DisplayMode) hook failed: $e")
             }
 
-            // showValidationWarning(DisplayMode, Function0) — overload with callback
+            // showValidationWarningWithCallback(DisplayMode, Function0)
+            // This is a SEPARATE method (not an overload of showValidationWarning).
             // Must invoke the Function0 callback before returning, otherwise callers
             // waiting for completion may get stuck (e.g. loading state never dismissed)
             try {
@@ -66,7 +67,7 @@ object UIManagerHook {
                     "kotlin.jvm.functions.Function0", classLoader
                 )
                 XposedHelpers.findAndHookMethod(
-                    clazz, "showValidationWarning", dmClass, fn0Class,
+                    clazz, "showValidationWarningWithCallback", dmClass, fn0Class,
                     object : XC_MethodReplacement() {
                         override fun replaceHookedMethod(param: MethodHookParam): Any? {
                             val callback = param.args[1]
@@ -74,16 +75,16 @@ object UIManagerHook {
                                 try {
                                     XposedHelpers.callMethod(callback, "invoke")
                                 } catch (e: Throwable) {
-                                    log("$TAG [WARN] showValidationWarning callback invoke failed: $e")
+                                    log("$TAG [WARN] showValidationWarningWithCallback callback invoke failed: $e")
                                 }
                             }
                             return null
                         }
                     }
                 )
-                log("$TAG [HOOK] showValidationWarning(DisplayMode, Function0) => invoke callback + return")
+                log("$TAG [HOOK] showValidationWarningWithCallback(DisplayMode, Function0) => invoke callback + return")
             } catch (e: Throwable) {
-                log("$TAG [WARN] showValidationWarning(DisplayMode, Function0) hook failed: $e")
+                log("$TAG [WARN] showValidationWarningWithCallback(DisplayMode, Function0) hook failed: $e")
             }
         } catch (e: Throwable) {
             log("$TAG [ERROR] UIManagerHook install failed: $e")
