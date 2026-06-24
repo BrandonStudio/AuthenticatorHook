@@ -54,7 +54,8 @@ jobs:
           set -o pipefail
           apk_path=$(find ./build/outputs/apk -name "*.apk" | head -n 1)
           new_path=$(echo "$apk_path" | sed 's/\.apk/-${{ steps.set-name-suffix.outputs.NAME_SUFFIX }}.unsigned.apk/g')
-          echo "APK_PATH=$apk_path" >> $GITHUB_OUTPUT
+          mv "$apk_path" "$new_path"
+          echo "APK_PATH=$new_path" >> $GITHUB_OUTPUT
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v7
