@@ -13,14 +13,28 @@ class MainHook : IXposedHookLoadPackage {
 
         log("$TAG loaded for ${lpparam.packageName}")
 
+        // Each layer is independently guarded so one failure does not disable the rest
+
         // Layer 1: Primary hook — intercept handleValidationFailure (single convergence point for all failure UI)
-        ValidationExecutorHook.install(lpparam.classLoader)
+        try {
+            ValidationExecutorHook.install(lpparam.classLoader)
+        } catch (e: Throwable) {
+            log("$TAG [ERROR] Layer 1 (ValidationExecutorHook) failed: $e")
+        }
 
         // Layer 2: Safety net — intercept ValidationUIManager display methods
-        UIManagerHook.install(lpparam.classLoader)
+        try {
+            UIManagerHook.install(lpparam.classLoader)
+        } catch (e: Throwable) {
+            log("$TAG [ERROR] Layer 2 (UIManagerHook) failed: $e")
+        }
 
         // Layer 3: Defense in depth — intercept phase check methods
-        PhaseHook.install(lpparam.classLoader)
+        try {
+            PhaseHook.install(lpparam.classLoader)
+        } catch (e: Throwable) {
+            log("$TAG [ERROR] Layer 3 (PhaseHook) failed: $e")
+        }
     }
 
     companion object {
