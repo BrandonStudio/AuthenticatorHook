@@ -20,16 +20,20 @@ object PhaseHook {
         "com.microsoft.authenticator.features.bastion.synccoordinator.IntegrationPhase\$Companion"
 
     fun install(classLoader: ClassLoader) {
-        val clazz = XposedHelpers.findClass(COMPANION_CLASS, classLoader)
-        val returnFalse = XC_MethodReplacement.returnConstant(false)
+        try {
+            val clazz = XposedHelpers.findClass(COMPANION_CLASS, classLoader)
+            val returnFalse = XC_MethodReplacement.returnConstant(false)
 
-        for (name in listOf("shouldBlockActions", "shouldShowWarningUI", "shouldWipeData")) {
-            try {
-                XposedHelpers.findAndHookMethod(clazz, name, returnFalse)
-                log("$TAG [HOOK] $name => false")
-            } catch (e: Throwable) {
-                log("$TAG [WARN] $name hook failed: $e")
+            for (name in listOf("shouldBlockActions", "shouldShowWarningUI", "shouldWipeData")) {
+                try {
+                    XposedHelpers.findAndHookMethod(clazz, name, returnFalse)
+                    log("$TAG [HOOK] $name => false")
+                } catch (e: Throwable) {
+                    log("$TAG [WARN] $name hook failed: $e")
+                }
             }
+        } catch (e: Throwable) {
+            log("$TAG [ERROR] PhaseHook install failed: $e")
         }
     }
 }

@@ -9,7 +9,6 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
-        maven { url 'https://mvnrepository.com/repos/appodeal-public' }
     }
 }
 dependencyResolutionManagement {
