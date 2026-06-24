@@ -60,6 +60,7 @@ jobs:
         with:
           name: ${{ env.APP_NAME }}-unsigned-${{ steps.set-name-suffix.outputs.NAME_SUFFIX }}-${{ matrix.configuration }}.apk
           path: ${{ steps.get-apk-path.outputs.APK_PATH }}
+          archive: false
 
   # dependency-submission:
 
