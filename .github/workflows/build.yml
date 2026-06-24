@@ -40,7 +40,8 @@ jobs:
       - name: Get and store apk path
         id: get-apk-path
         run: |
-          apk_path=$(find app/build/outputs/apk -name "*.apk" | head -n 1)
+          set -o pipefail
+          apk_path=$(find ./app/build/outputs/apk -name "*.apk" | head -n 1)
           echo "APK_PATH=$apk_path" >> $GITHUB_OUTPUT
 
       - name: Set NAME_SUFFIX
