@@ -1,6 +1,6 @@
 # AuthenticatorHook
 
-XPosed module to bypass Root check within Microsoft Authenticator (`com.azure.authenticator`).
+XPosed module to bypass Root detection within Microsoft Authenticator (`com.azure.authenticator`).
 
 ## Background
 
@@ -22,11 +22,10 @@ Three-layer hook strategy (verified via Frida):
 
 ## Installation
 
-1. Build: `./gradlew assembleDebug`
-2. Install APK on device
-3. LSPosed Manager → Modules → Enable AuthenticatorHook
-4. Set scope to `com.azure.authenticator`
-5. Force-stop Authenticator and relaunch
+1. Download and install APK on device
+2. LSPosed Manager → Modules → Enable AuthenticatorHook
+3. Set scope to `com.azure.authenticator`
+4. Force-stop Authenticator and relaunch
 
 ## Project Structure
 
@@ -39,3 +38,6 @@ src/main/kotlin/com/brandonstudio/azauthhook/
     ├── UIManagerHook.kt              # Safety net
     └── PhaseHook.kt                  # Defense in depth
 ```
+
+## License
+This project is licensed under [the MIT License](LICENSE).
